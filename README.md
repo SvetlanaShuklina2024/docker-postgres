@@ -1,2 +1,1 @@
-# docker-postgres
-docker-postgres
+# docker-compose-training
