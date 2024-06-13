@@ -1,0 +1,59 @@
+services:
+    www:
+        build: .
+        ports: 
+            - "8001:80"
+        volumes:
+            - ./www:/var/www/html/
+            - ./php.ini:/usr/local/etc/php/php.ini
+        links:
+            - db
+        networks:
+            - default
+        depends_on:
+            - db
+    db:
+        image: mysql:5.7.13
+        ports: 
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: myDb
+            MYSQL_USER: user
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+        volumes:
+            - ./dump:/docker-entrypoint-initdb.d
+            - persistent:/var/lib/mysql
+        networks:
+            - default
+    phpmyadmin:
+        image: phpmyadmin
+        links: 
+            - db:db
+        ports:
+            - 8000:80
+        environment:
+            MYSQL_USER: user
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+
+    postgresql:
+        image: postgres:latest
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: myPgDb
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: test
+
+    pgadmin:
+        image: dpage/pgadmin4
+        ports:
+            - "5050:5050"
+        environment:
+            PGADMIN_DEFAULT_EMAIL: your_email@example.com
+            PGADMIN_DEFAULT_PASSWORD: your_password
+
+            
+volumes:
+    persistent:
